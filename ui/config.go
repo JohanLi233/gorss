@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/JohanLi233/gorss/config"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/lizhonghan/gorss/config"
 )
 
 // 用于配置编辑的消息类型

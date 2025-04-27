@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/lizhonghan/gorss/config"
+	"github.com/JohanLi233/gorss/config"
 	"github.com/mmcdole/gofeed"
 )
 

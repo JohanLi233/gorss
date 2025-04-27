@@ -1,4 +1,4 @@
-module github.com/lizhonghan/gorss
+module github.com/JohanLi233/gorss
 
 go 1.24
 

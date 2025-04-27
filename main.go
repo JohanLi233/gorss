@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/JohanLi233/gorss/config"
+	"github.com/JohanLi233/gorss/feed"
+	"github.com/JohanLi233/gorss/ui"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/lizhonghan/gorss/config"
-	"github.com/lizhonghan/gorss/feed"
-	"github.com/lizhonghan/gorss/ui"
 )
 
 func main() {

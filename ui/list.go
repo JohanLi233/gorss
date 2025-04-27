@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/JohanLi233/gorss/feed"
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/lizhonghan/gorss/feed"
 )
 
 // Item represents a selectable list item

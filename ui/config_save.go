@@ -5,8 +5,8 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/JohanLi233/gorss/config"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/lizhonghan/gorss/config"
 	"github.com/spf13/viper"
 )
 

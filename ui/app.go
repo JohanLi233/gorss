@@ -5,11 +5,11 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/JohanLi233/gorss/config"
+	"github.com/JohanLi233/gorss/feed"
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/lizhonghan/gorss/config"
-	"github.com/lizhonghan/gorss/feed"
 )
 
 // View states
