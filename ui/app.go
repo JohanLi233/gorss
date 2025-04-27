@@ -267,12 +267,6 @@ func (m Model) View() string {
 		return "Initializing..."
 	}
 
-	// 根据当前view调整feedsList高亮
-	if m.currentView == viewArticles {
-		m.feedsList.Select(-1) // 取消高亮
-	} else if m.currentView == viewFeeds && m.feedsList.Index() < 0 && len(m.feeds) > 0 {
-		m.feedsList.Select(0)
-	}
 	feedsView := feedListStyle.Render(m.feedsList.View())
 
 	var contentView string
