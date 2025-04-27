@@ -36,8 +36,8 @@ func LoadConfig() (*Config, error) {
 		}
 
 		defaultConfig := `feeds:
-		- name: "maxkb"
-		url: "https://github.com/1Panel-dev/MaxKB/releases.atom"
+		- name: "gorss"
+		url: "https://github.com/JohanLi233/gorss/releases"
 		`
 		if err := os.WriteFile(configPath, []byte(defaultConfig), 0644); err != nil {
 			return nil, fmt.Errorf("failed to create default config file: %w", err)
