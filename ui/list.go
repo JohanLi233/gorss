@@ -59,6 +59,12 @@ func (d ItemDelegate) Update(msg tea.Msg, m *list.Model) tea.Cmd {
 }
 
 // Render renders a list item
+// 临时全局变量，用于多选高亮传递
+var (
+	MultiSelectMode bool
+	SelectedArticleIndexes map[int]struct{}
+)
+
 func (d ItemDelegate) Render(w io.Writer, m list.Model, index int, listItem list.Item) {
 	i, ok := listItem.(Item)
 	if !ok {
@@ -68,7 +74,13 @@ func (d ItemDelegate) Render(w io.Writer, m list.Model, index int, listItem list
 	str := fmt.Sprintf("%s\n%s", i.title, i.description)
 
 	fn := normalArticleStyle.Render
-	if index == m.Index() {
+	if MultiSelectMode {
+		if _, picked := SelectedArticleIndexes[index]; picked {
+			fn = selectedMultiArticleStyle.Render
+		} else if index == m.Index() {
+			fn = selectedArticleStyle.Render
+		}
+	} else if index == m.Index() {
 		fn = selectedArticleStyle.Render
 	}
 

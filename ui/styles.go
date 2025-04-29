@@ -11,6 +11,9 @@ var (
 	special   = lipgloss.AdaptiveColor{Light: "#43BF6D", Dark: "#73F59F"}
 	alert     = lipgloss.AdaptiveColor{Light: "#FD4659", Dark: "#FF5A6E"}
 
+	// 奶茶色（bubble tea）
+	bubbleTeaColor = lipgloss.AdaptiveColor{Light: "#EED9C4", Dark: "#BFA48A"}
+
 	// Styles
 	titleStyle = lipgloss.NewStyle().
 			Bold(true).
@@ -44,6 +47,11 @@ var (
 	selectedArticleStyle = lipgloss.NewStyle().
 				Bold(true).
 				Foreground(special)
+
+	// 多选高亮：奶茶色
+	selectedMultiArticleStyle = lipgloss.NewStyle().
+			Bold(true).
+			Foreground(bubbleTeaColor)
 
 	normalArticleStyle = lipgloss.NewStyle().
 			Foreground(lipgloss.AdaptiveColor{Light: "#1A1A1A", Dark: "#DDDDDD"})

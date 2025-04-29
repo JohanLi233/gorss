@@ -22,13 +22,23 @@ type Article struct {
 	FeedName    string
 }
 
+// FeedSummary contains the LLM-generated summary for a feed
+type FeedSummary struct {
+	FeedName    string
+	Summary     string
+	Generated   time.Time
+	ArticleCount int
+}
+
 // FeedManager handles fetching and storing feed data
 type FeedManager struct {
 	Feeds     []config.Feed
 	Articles  []Article
+	Summaries map[string]FeedSummary // Key is feed name
 	parser    *gofeed.Parser
 	mu        sync.RWMutex
 	cachePath string
+	summaryPath string
 }
 
 // NewFeedManager creates a new feed manager and loads cached articles if available
@@ -38,15 +48,26 @@ func NewFeedManager(feeds []config.Feed) *FeedManager {
 		homeDir = "."
 	}
 	cachePath := filepath.Join(homeDir, ".cache", "gorss", "feed_cache.json")
+	summaryPath := filepath.Join(homeDir, ".cache", "gorss", "summaries.json")
 
 	fm := &FeedManager{
-		Feeds:     feeds,
-		parser:    gofeed.NewParser(),
-		cachePath: cachePath,
+		Feeds:       feeds,
+		Summaries:   make(map[string]FeedSummary),
+		parser:      gofeed.NewParser(),
+		cachePath:   cachePath,
+		summaryPath: summaryPath,
 	}
+
+	// Load feed cache
 	if err := fm.loadCache(); err != nil {
 		fmt.Printf("Warning: failed to load feed cache: %v\n", err)
 	}
+
+	// Load summaries cache
+	if err := fm.loadSummaries(); err != nil {
+		fmt.Printf("Warning: failed to load summaries cache: %v\n", err)
+	}
+
 	return fm
 }
 
@@ -183,5 +204,72 @@ func (fm *FeedManager) saveCache() error {
 	if err := os.WriteFile(fm.cachePath, data, 0644); err != nil {
 		return err
 	}
+	return nil
+}
+
+// GetSummary returns the summary for a specific feed
+func (fm *FeedManager) GetSummary(feedName string) (FeedSummary, bool) {
+	fm.mu.RLock()
+	defer fm.mu.RUnlock()
+	summary, exists := fm.Summaries[feedName]
+	return summary, exists
+}
+
+// SetSummary sets or updates the summary for a feed
+func (fm *FeedManager) SetSummary(feedName string, summary string, articleCount int) {
+	fm.mu.Lock()
+	defer fm.mu.Unlock()
+
+	fm.Summaries[feedName] = FeedSummary{
+		FeedName:     feedName,
+		Summary:      summary,
+		Generated:    time.Now(),
+		ArticleCount: articleCount,
+	}
+
+	// Save summaries to disk
+	_ = fm.saveSummaries()
+}
+
+// loadSummaries loads cached summaries from the summary file
+func (fm *FeedManager) loadSummaries() error {
+	data, err := os.ReadFile(fm.summaryPath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil
+		}
+		return err
+	}
+
+	var summaries map[string]FeedSummary
+	if err := json.Unmarshal(data, &summaries); err != nil {
+		return err
+	}
+
+	fm.mu.Lock()
+	fm.Summaries = summaries
+	fm.mu.Unlock()
+	return nil
+}
+
+// saveSummaries saves current summaries to the summary file
+func (fm *FeedManager) saveSummaries() error {
+	dir := filepath.Dir(fm.summaryPath)
+	if err := os.MkdirAll(dir, 0755); err != nil {
+		return err
+	}
+
+	fm.mu.RLock()
+	data, err := json.MarshalIndent(fm.Summaries, "", "  ")
+	fm.mu.RUnlock()
+
+	if err != nil {
+		return err
+	}
+
+	if err := os.WriteFile(fm.summaryPath, data, 0644); err != nil {
+		return err
+	}
+
 	return nil
 }
